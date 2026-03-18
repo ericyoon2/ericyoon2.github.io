@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>ericyoon2.github.io</title>
+      <meta charset="utf-8">
+      <title>Remote Terminal</title>
     <style>
-          body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f5f5f5; }
-          .container { text-align: center; }
-          h1 { font-size: 2.5rem; color: #333; }
-          p { color: #666; }
+          body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#1a1a1a;color:#fff;text-align:center;}
         </style>
   </head>
   <body>
-      <div class="container">
-            <h1>Welcome to ericyoon2.github.io</h1>
-          <p>Hello World!</p>
-      </div>div>
+      <div>
+            <div id="msg">Connecting to terminal...</div>
+            <div id="sub" style="color:#888;font-size:.9em;margin-top:8px"></div>
+      </div>
+      <script>
+            fetch('tunnel.txt?_='+Date.now())
+              .then(r=>r.ok?r.text():Promise.reject())
+              .then(url=>window.location.replace(url.trim()))
+              .catch(()=>{
+                        document.getElementById('msg').textContent='Terminal is currently offline.';
+                        document.getElementById('sub').textContent='Retrying in 5s...';
+                        setTimeout(()=>location.reload(),5000);
+              });
+      </script>
+</html>
   </body>
-</html>html></p></h1>
-  </body>
-    </style></title>
-  </head>
