@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <meta charset="utf-8">
-      <title>Remote Terminal</title>
-    <style>
-          body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#1a1a1a;color:#fff;text-align:center;}
-        </style>
-  </head>
-  <body>
-      <div>
-            <div id="msg">Connecting to terminal...</div>
-            <div id="sub" style="color:#888;font-size:.9em;margin-top:8px"></div>
-      </div>
-      <script>
-            fetch('tunnel.txt?_='+Date.now())
-              .then(r=>r.ok?r.text():Promise.reject())
-              .then(url=>window.location.replace(url.trim()))
-              .catch(()=>{
-                        document.getElementById('msg').textContent='Terminal is currently offline.';
-                        document.getElementById('sub').textContent='Retrying in 5s...';
-                        setTimeout(()=>location.reload(),5000);
-              });
-      </script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remote Terminal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1a1a1a;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    .container { width: 100%; max-width: 400px; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #333;
+      border-top-color: #4ade80;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #msg { font-size: clamp(1rem, 4vw, 1.25rem); margin-bottom: 8px; }
+    #sub { font-size: clamp(0.8rem, 3vw, 0.95rem); color: #666; }
+    .offline .spinner { border-top-color: #f87171; }
+  </style>
+</head>
+<body>
+  <div class="container" id="wrap">
+    <div class="spinner"></div>
+    <div id="msg">Connecting to terminal...</div>
+    <div id="sub"></div>
+  </div>
+  <script>
+    function connect() {
+      fetch('tunnel.txt?_=' + Date.now())
+        .then(r => r.ok ? r.text() : Promise.reject())
+        .then(url => window.location.replace(url.trim()))
+        .catch(() => {
+          document.getElementById('wrap').classList.add('offline');
+          document.getElementById('msg').textContent = 'Terminal is currently offline.';
+          document.getElementById('sub').textContent = 'Retrying in 5s...';
+          setTimeout(connect, 5000);
+        });
+    }
+    connect();
+  </script>
+</body>
 </html>
-  </body>
